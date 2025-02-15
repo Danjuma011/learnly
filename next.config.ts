@@ -9,7 +9,10 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Add this line
+  output: 'export', // For static site generation
+  experimental: {
+    buildCache: true, // Enable build caching
+  },
 };
 
 module.exports = nextConfig;
