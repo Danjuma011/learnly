@@ -2,39 +2,39 @@
 import BackButton from "@/components/buttons/BackButton";
 import MultipleQuestionHeader from "@/components/MultipleQuestionHeader";
 import { IMultipleQuestions } from "@/interfaces/multipleQuestions";
-import { FC, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdErrorOutline } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 
-const questions = [
+const questions: IMultipleQuestions[] = [
   {
-    id: 1,
+    id: "1",
     question: "What do plants need for photosynthesis?",
     options: ["oxygen and sugar", "sunlight, water & carbon dioxide", "protein & soil", "Rome"],
     correct: "sunlight, water & carbon dioxide",
   },
   {
-    id: 2,
+    id: "2",
     question: "What is the role of sunlight in photosynthesis?",
     options: ["it provides energy to make food", "it helps plants absorb water", "Mars", "it turns leaves green"],
     correct: "it provides energy to make food",
   },
   {
-    id: 3,
+    id: "3",
     question: "What is the primary pigment involved in photosynthesis?",
     options: ["chlorophyll", "carotene", "xanthophyll", "anthocyanin"],
     correct: "chlorophyll",
   },
   {
-    id: 4,
+    id: "4",
     question: "What gas do plants release during photosynthesis?",
     options: ["carbon dioxide", "oxygen", "nitrogen", "hydrogen"],
     correct: "oxygen",
   },
   {
-    id: 5,
+    id: "5",
     question: "What is the main product of photosynthesis?",
     options: ["glucose", "protein", "fat", "starch"],
     correct: "glucose",
@@ -42,7 +42,7 @@ const questions = [
 
 ];
 
-const Page: FC<IMultipleQuestions> = () => {
+const Page = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);

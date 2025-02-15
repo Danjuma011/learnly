@@ -90,7 +90,7 @@ const Page = () => {
   const [hoveredDefinition, setHoveredDefinition] = useState<string | null>(
     null
   );
-  const [attempted, setAttempted] = useState<boolean>(false);
+  const [, setAttempted] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(120);
   const [progress, setProgress] = useState<Progress>({} as Progress);
   const [isTimerUp, setIsTimerUp] = useState<boolean>(false);
