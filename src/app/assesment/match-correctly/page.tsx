@@ -329,9 +329,9 @@ const Page = () => {
                   {definition}
                   {matched[TERMS[currentIndex]] === definition &&
                     (isCorrect ? (
-                      <IoCheckmarkCircle className="text-green-500 text-xl" />
+                      <IoCheckmarkCircle className="text-green-500 text-2xl" />
                     ) : (
-                      <IoCloseCircle className="text-red-500 text-xl" />
+                      <IoCloseCircle className="text-red-500 text-2xl" />
                     ))}
                 </div>
               )
