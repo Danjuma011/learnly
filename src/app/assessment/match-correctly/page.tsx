@@ -7,6 +7,7 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { IoAlarmSharp } from "react-icons/io5";
 import { GiTap } from "react-icons/gi";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 
 // Define constants for terms and definitions
@@ -94,6 +95,8 @@ const Page = () => {
   const [progress, setProgress] = useState<Progress>({} as Progress);
   const [isTimerUp, setIsTimerUp] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
+
+const router = useRouter()
 
   // Load saved state from local storage on mount
   useEffect(() => {
@@ -246,8 +249,8 @@ const Page = () => {
   );
 
   return (
-    <div className="p-4 max-w-[850px] mx-auto ">
-      <div className="flex justify-between items-center ">
+    <div className="p-4 max-w-[850px] mx-auto font-poppins">
+      <div className="flex justify-between items-center">
         <MatchCorrectlyBackButton back={handleBack} />
         <p className="font-bold text-2xl">Course Preview</p>
         <div className="border-2 border-purple-200 p-3 rounded-lg w-fit inline-block">
@@ -256,8 +259,10 @@ const Page = () => {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="mt-4 font-bold mb-2">Lesson 1.{currentIndex + 1}</p>
-        <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-lg flex items-center gap-1">
+        <p className="mt-4 font-bold mb-2 text-lg sm:text-xl">
+          Lesson 1.{currentIndex + 1}
+        </p>
+        <span className="bg-purple-500 text-white text-xs sm:text-sm px-2 py-1 rounded-lg flex items-center gap-1">
           <IoAlarmSharp />
           {String(Math.floor(timeLeft / 60)).padStart(2, "0")}:
           {String(timeLeft % 60).padStart(2, "0")}
@@ -268,25 +273,38 @@ const Page = () => {
 
       {isTimerUp ? (
         <div className="mb-20">
-          <p className="mb-4 text-center font-semibold text-xl">Time up!</p>
+          <p className="mb-4 text-center font-semibold text-xl sm:text-2xl">
+            Time up!
+          </p>
           <div className="mt-6 text-center">
-            <p className="text-xl font-bold text-purple-500">
+            <p className="text-xl sm:text-2xl font-bold text-purple-500">
               Your Score: {score} / {TERMS.length}
             </p>
             <button
-              className="mt-4 p-3 rounded-lg bg-purple-500 text-white"
+              className="mt-4 py-2 px-24 rounded hover:text-red-200 bg-green-500 text-white text-sm sm:text-base"
               onClick={() => {
                 // Reset all state variables
                 setCurrentIndex(0);
                 setMatched({} as MatchedAnswers);
                 setProgress({} as Progress);
                 setScore(0);
-                setTimeLeft(120);
+                setTimeLeft(120)
                 setIsTimerUp(false);
               }}
             >
               Start New Test
             </button>
+
+            <p className="mt-5">or</p>
+
+<button
+className="cursor-pointer text-white hover:text-red-200 mb-2 mt-6 bg-purple-500 py-2 px-20 rounded"
+onClick={() => router.push("/assessment/multiple-questions")}
+>
+multiple questions
+</button>
+
+
           </div>
         </div>
       ) : (
@@ -296,7 +314,7 @@ const Page = () => {
               <GiTap className="text-purple-600" />
             </div>
 
-            <p className="text-center font-semibold text-xl w-full">
+            <p className="text-center font-semibold text-lg sm:text-xl w-full">
               Match the Algebraic terms!
             </p>
           </div>
@@ -307,7 +325,7 @@ const Page = () => {
               (definition, index, array) => (
                 <div
                   key={index}
-                  className={`border-2 p-4 text-center rounded-md min-h-[60px] flex items-center justify-between gap-2 ${
+                  className={`border border-dashed p-4 text-center rounded-md min-h-[60px] flex items-center justify-between gap-2 ${
                     matched[TERMS[currentIndex]] === definition
                       ? isCorrect
                         ? "border-green-500 bg-green-100"
@@ -339,22 +357,31 @@ const Page = () => {
           </div>
 
           {/* Drag Section */}
-
-
-            <p className="text-center font-semibold text-xl mt-8">Drag the algebraic term below to match the definition above</p>
-          <div className="flex justify-center gap-4 mt-6">
-            {TERMS.map((term, index) => (
-              <div
-                key={index}
-                className="border-2 p-4 text-center rounded-lg cursor-pointer bg-[#070606] text-[#fefefe]"
-                draggable={!isTimerUp}
-                onDragStart={() => handleDragStart(term)}
-                style={{ pointerEvents: isTimerUp ? "none" : "auto" }}
-              >
-                {term}
-              </div>
-            ))}
-          </div>
+          <p className="text-center font-semibold text-lg sm:text-xl mt-10">
+            Drag the algebraic term below to match the definition above
+          </p>
+          <div className="flex justify-center">
+          <div className="w-full">
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6 px-4">
+    {TERMS.map((term, index) => (
+      <div
+        key={index}
+        className={`border-2 p-4 text-center rounded-lg cursor-pointer bg-[#070606] text-[#fefefe] min-w-[100px] md:w-[120px]
+          ${
+            TERMS.length % 2 !== 0 && index === TERMS.length - 1
+              ? "col-span-2 sm:col-span-1" // Apply col-span-2 only on small screens
+              : ""
+          }`}
+        draggable={!isTimerUp}
+        onDragStart={() => handleDragStart(term)}
+        style={{ pointerEvents: isTimerUp ? "none" : "auto" }}
+      >
+        {term}
+      </div>
+    ))}
+  </div>
+</div>
+</div>
 
           {/* Reset and Next Button Section */}
           <div className="flex items-center space-x-6 justify-center">
@@ -367,19 +394,19 @@ const Page = () => {
             </div>
 
             <button
-  className="mt-6 p-3 rounded-lg bg-purple-800 text-white w-[30%] flex items-center justify-center gap-4"
-  onClick={() => {
-    if (currentIndex < TERMS.length - 1) {
-      handleNext(); // Go to the next question
-    } else {
-      gradeUser(); // Score the user and set timer to 0
-    }
-  }}
-  disabled={isTimerUp}
->
-  {currentIndex < TERMS.length - 1 ? "Continue" : "Finish"}
-  <FaArrowRightLong className="ml-2" /> {/* Icon on the right */}
-</button>
+              className="mt-6 p-3 rounded-lg bg-purple-800 text-white w-[40%] md:w-[30%] flex items-center justify-center gap-4 text-sm sm:text-base"
+              onClick={() => {
+                if (currentIndex < TERMS.length - 1) {
+                  handleNext(); // Go to the next question
+                } else {
+                  gradeUser(); // Score the user and set timer to 0
+                }
+              }}
+              disabled={isTimerUp}
+            >
+              {currentIndex < TERMS.length - 1 ? "Continue" : "Finish"}
+              <FaArrowRightLong className="ml-2" /> {/* Icon on the right */}
+            </button>
           </div>
         </div>
       )}

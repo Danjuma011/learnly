@@ -5,6 +5,8 @@ import { IMultipleQuestions } from "@/interfaces/multipleQuestions";
 import { FC, useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdErrorOutline } from "react-icons/md";
+import { useRouter } from "next/navigation";
+
 
 const questions = [
   {
@@ -37,185 +39,19 @@ const questions = [
     options: ["glucose", "protein", "fat", "starch"],
     correct: "glucose",
   },
-  {
-    id: 6,
-    question: "Where does photosynthesis primarily occur in a plant?",
-    options: ["roots", "stem", "leaves", "flowers"],
-    correct: "leaves",
-  },
-  {
-    id: 7,
-    question: "What is the chemical equation for photosynthesis?",
-    options: [
-      "6CO2 + 6H2O → C6H12O6 + 6O2",
-      "C6H12O6 + 6O2 → 6CO2 + 6H2O",
-      "2H2 + O2 → 2H2O",
-      "Na + Cl → NaCl",
-    ],
-    correct: "6CO2 + 6H2O → C6H12O6 + 6O2",
-  },
-  {
-    id: 8,
-    question: "What is the role of water in photosynthesis?",
-    options: [
-      "it provides oxygen",
-      "it provides electrons",
-      "it provides carbon dioxide",
-      "it provides energy",
-    ],
-    correct: "it provides electrons",
-  },
-  {
-    id: 9,
-    question: "What is the role of carbon dioxide in photosynthesis?",
-    options: [
-      "it provides oxygen",
-      "it provides carbon for glucose",
-      "it provides energy",
-      "it provides water",
-    ],
-    correct: "it provides carbon for glucose",
-  },
-  {
-    id: 10,
-    question: "What is the name of the process that converts light energy into chemical energy?",
-    options: ["respiration", "photosynthesis", "transpiration", "fermentation"],
-    correct: "photosynthesis",
-  },
-  {
-    id: 11,
-    question: "What is the byproduct of photosynthesis?",
-    options: ["carbon dioxide", "water", "oxygen", "glucose"],
-    correct: "oxygen",
-  },
-  {
-    id: 12,
-    question: "What is the name of the organelle where photosynthesis occurs?",
-    options: ["mitochondria", "nucleus", "chloroplast", "ribosome"],
-    correct: "chloroplast",
-  },
-  {
-    id: 13,
-    question: "What is the role of chlorophyll in photosynthesis?",
-    options: [
-      "it absorbs sunlight",
-      "it absorbs water",
-      "it absorbs carbon dioxide",
-      "it absorbs oxygen",
-    ],
-    correct: "it absorbs sunlight",
-  },
-  {
-    id: 14,
-    question: "What is the name of the process that plants use to absorb water?",
-    options: ["photosynthesis", "transpiration", "respiration", "osmosis"],
-    correct: "osmosis",
-  },
-  {
-    id: 15,
-    question: "What is the name of the process that plants use to release water vapor?",
-    options: ["photosynthesis", "transpiration", "respiration", "osmosis"],
-    correct: "transpiration",
-  },
-  {
-    id: 16,
-    question: "What is the name of the process that converts glucose into energy?",
-    options: ["photosynthesis", "respiration", "transpiration", "fermentation"],
-    correct: "respiration",
-  },
-  {
-    id: 17,
-    question: "What is the name of the sugar produced during photosynthesis?",
-    options: ["fructose", "sucrose", "glucose", "lactose"],
-    correct: "glucose",
-  },
-  {
-    id: 18,
-    question: "What is the name of the pores on leaves that allow gas exchange?",
-    options: ["stomata", "chloroplasts", "xylem", "phloem"],
-    correct: "stomata",
-  },
-  {
-    id: 19,
-    question: "What is the name of the tissue that transports water in plants?",
-    options: ["phloem", "xylem", "stomata", "chloroplast"],
-    correct: "xylem",
-  },
-  {
-    id: 20,
-    question: "What is the name of the tissue that transports sugars in plants?",
-    options: ["phloem", "xylem", "stomata", "chloroplast"],
-    correct: "phloem",
-  },
-  {
-    id: 21,
-    question: "What is the name of the process that converts glucose into starch?",
-    options: ["photosynthesis", "respiration", "transpiration", "polymerization"],
-    correct: "polymerization",
-  },
-  {
-    id: 22,
-    question: "What is the name of the process that converts starch into glucose?",
-    options: ["photosynthesis", "respiration", "hydrolysis", "fermentation"],
-    correct: "hydrolysis",
-  },
-  {
-    id: 23,
-    question: "What is the name of the process that converts glucose into ATP?",
-    options: ["photosynthesis", "respiration", "transpiration", "fermentation"],
-    correct: "respiration",
-  },
-  {
-    id: 24,
-    question: "What is the name of the process that converts glucose into ethanol?",
-    options: ["photosynthesis", "respiration", "transpiration", "fermentation"],
-    correct: "fermentation",
-  },
-  {
-    id: 25,
-    question: "What is the name of the process that converts glucose into lactic acid?",
-    options: ["photosynthesis", "respiration", "transpiration", "fermentation"],
-    correct: "fermentation",
-  },
-  {
-    id: 26,
-    question: "What is the name of the process that converts glucose into carbon dioxide and water?",
-    options: ["photosynthesis", "respiration", "transpiration", "fermentation"],
-    correct: "respiration",
-  },
-  {
-    id: 27,
-    question: "What is the name of the process that converts glucose into glycogen?",
-    options: ["photosynthesis", "respiration", "polymerization", "fermentation"],
-    correct: "polymerization",
-  },
-  {
-    id: 28,
-    question: "What is the name of the process that converts glucose into cellulose?",
-    options: ["photosynthesis", "respiration", "polymerization", "fermentation"],
-    correct: "polymerization",
-  },
-  {
-    id: 29,
-    question: "What is the name of the process that converts glucose into lipids?",
-    options: ["photosynthesis", "respiration", "polymerization", "fermentation"],
-    correct: "polymerization",
-  },
-  {
-    id: 30,
-    question: "What is the name of the process that converts glucose into proteins?",
-    options: ["photosynthesis", "respiration", "polymerization", "fermentation"],
-    correct: "polymerization",
-  },
+
 ];
 
 const Page: FC<IMultipleQuestions> = () => {
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+    const router = useRouter();
+  
   // Load saved data from localStorage on mount
   useEffect(() => {
     const savedIndex = localStorage.getItem("currentIndex");
@@ -285,10 +121,20 @@ const Page: FC<IMultipleQuestions> = () => {
             </p>
             <button
               onClick={startAgain}
-              className="mt-4 p-2 bg-green-500 text-white rounded w-full"
+              className="mt-4 p-2 bg-green-500 text-white rounded px-20 hover:text-red-200"
             >
               Start Again
             </button>
+
+            <p className="mt-5">or</p>
+
+            <button
+            className="cursor-pointer text-white hover:text-red-200 mb-2 mt-6 bg-purple-500 py-2 px-20 rounded"
+            onClick={() => router.push("/assessment/match-correctly")}
+          >
+            Drag & Drop
+          </button>
+
           </div>
         ) : (
           <>
