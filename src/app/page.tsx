@@ -32,7 +32,7 @@ export default function Home() {
             className="cursor-pointer text-white hover:text-blue-800 mb-2 bg-slate-500 p-3 rounded-lg"
             onClick={() => handleNavigation("/assessment/match-correctly")}
           >
-            Drag & Drop
+            Drag & drop
           </button>
         </>
       )}
