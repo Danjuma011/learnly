@@ -14,8 +14,8 @@ const TERMS = ["Mean", "Median", "Mode", "Range", "Variance"] as const;
 type Term = (typeof TERMS)[number];
 
 type TermDefinition = {
-  definitions: string[]; // Array of possible definitions
-  correctAnswer: string; // The correct definition for this term
+  definitions: string[]; 
+  correctAnswer: string; 
 };
 
 const DEFINITIONS: Record<Term, TermDefinition> = {
@@ -96,35 +96,6 @@ const Page = () => {
   const router = useRouter();
 
 
-  // const touchMoveHandler = (e: TouchEvent) => {
-  //   e.preventDefault(); // Prevent default behavior (e.g., scrolling)
-  // };
-
-  // useEffect(() => {
-  //   // Add the non-passive touchmove event listener
-  //   document.addEventListener("touchmove", touchMoveHandler, { passive: false });
-
-  //   // Clean up the event listener on unmount
-  //   return () => {
-  //     document.removeEventListener("touchmove", touchMoveHandler);
-  //   };
-  // }, []);
-
-  // const touchMoveHandler = (e: TouchEvent) => {
-  //   e.preventDefault(); // Prevent default behavior (e.g., scrolling)
-  // };
-  
-  // useEffect(() => {
-  //   // Add the non-passive touchmove event listener
-  //   document.addEventListener("touchmove", touchMoveHandler, { passive: false });
-  
-  //   // Clean up the event listener on unmount
-  //   return () => {
-  //     document.removeEventListener("touchmove", touchMoveHandler);
-  //   };
-  // }, []);
-
-
   const handleTouchStart = (e: React.TouchEvent, term: Term) => {
     e.preventDefault();
     setDraggedTerm(term);
@@ -140,9 +111,6 @@ const Page = () => {
       handleDrop(definition);
     }
   };
-
-
-
 
 
   const gradeUser = () => {
