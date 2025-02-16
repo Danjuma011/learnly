@@ -2,11 +2,10 @@
 import BackButton from "@/components/buttons/BackButton";
 import MultipleQuestionHeader from "@/components/MultipleQuestionHeader";
 import { IMultipleQuestions } from "@/interfaces/multipleQuestions";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdErrorOutline } from "react-icons/md";
 import { useRouter } from "next/navigation";
-
 
 const questions: IMultipleQuestions[] = [
   {
@@ -39,43 +38,61 @@ const questions: IMultipleQuestions[] = [
     options: ["glucose", "protein", "fat", "starch"],
     correct: "glucose",
   },
-
 ];
 
 const Page = () => {
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
 
-    const router = useRouter();
-  
+  const router = useRouter();
+
   // Load saved data from localStorage on mount
   useEffect(() => {
     const savedIndex = localStorage.getItem("currentIndex");
     const savedScore = localStorage.getItem("score");
+    const savedAnsweredQuestions = localStorage.getItem("answeredQuestions");
 
     if (savedIndex) setCurrentIndex(Number(savedIndex));
     if (savedScore) setScore(Number(savedScore));
+    if (savedAnsweredQuestions) setAnsweredQuestions(new Set(JSON.parse(savedAnsweredQuestions)));
   }, []);
 
-  // Save currentIndex and score to localStorage when they change
+  // Save currentIndex, score, and answeredQuestions to localStorage when they change
   useEffect(() => {
     localStorage.setItem("currentIndex", String(currentIndex));
     localStorage.setItem("score", String(score));
-  }, [currentIndex, score]);
+    localStorage.setItem("answeredQuestions", JSON.stringify(Array.from(answeredQuestions)));
+  }, [currentIndex, score, answeredQuestions]);
 
   const currentQuestion = questions[currentIndex];
 
   const handleSelect = (option: string) => {
-    setSelected(option);
     const correct = option === currentQuestion.correct;
+    const wasPreviouslyCorrect = answeredQuestions.has(currentQuestion.id);
+
+    setSelected(option);
     setIsCorrect(correct);
 
-    if (correct && isCorrect === null) {
-      setScore((prev) => prev + 1);
+    if (correct) {
+      if (!wasPreviouslyCorrect) {
+        // If the answer is correct and it wasn't previously answered correctly, increment the score
+        setScore((prev) => prev + 1);
+        setAnsweredQuestions((prev) => new Set(prev).add(currentQuestion.id));
+      }
+    } else {
+      if (wasPreviouslyCorrect) {
+        // If the answer is wrong and it was previously answered correctly, decrement the score
+        setScore((prev) => prev - 1);
+        setAnsweredQuestions((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(currentQuestion.id);
+          return newSet;
+        });
+      }
     }
   };
 
@@ -99,6 +116,7 @@ const Page = () => {
     setFinished(true);
     localStorage.removeItem("currentIndex"); // Clear saved progress
     localStorage.removeItem("score"); // Clear saved score
+    localStorage.removeItem("answeredQuestions"); // Clear saved answered questions
   };
 
   const startAgain = () => {
@@ -107,6 +125,7 @@ const Page = () => {
     setIsCorrect(null); // Reset correctness state
     setScore(0); // Reset score
     setFinished(false); // Reset finished state
+    setAnsweredQuestions(new Set()); // Reset answered questions
   };
 
   return (
@@ -129,12 +148,11 @@ const Page = () => {
             <p className="mt-5">or</p>
 
             <button
-            className="cursor-pointer text-white hover:text-red-200 mb-2 mt-6 bg-purple-500 py-2 px-20 rounded"
-            onClick={() => router.push("/assessment/match-correctly")}
-          >
-            Drag & Drop
-          </button>
-
+              className="cursor-pointer text-white hover:text-red-200 mb-2 mt-6 bg-purple-500 py-2 px-20 rounded"
+              onClick={() => router.push("/assessment/match-correctly")}
+            >
+              Drag & Drop
+            </button>
           </div>
         ) : (
           <>
