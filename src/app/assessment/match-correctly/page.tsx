@@ -91,7 +91,7 @@ const Page = () => {
     null
   );
   const [, setAttempted] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState<number>(120);
+  const [timeLeft, setTimeLeft] = useState<number>(60);
   const [progress, setProgress] = useState<Progress>({} as Progress);
   const [isTimerUp, setIsTimerUp] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
