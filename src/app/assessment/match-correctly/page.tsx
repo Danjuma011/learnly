@@ -14,8 +14,8 @@ const TERMS = ["Mean", "Median", "Mode", "Range", "Variance"] as const;
 type Term = (typeof TERMS)[number];
 
 type TermDefinition = {
-  definitions: string[]; 
-  correctAnswer: string; 
+  definitions: string[];
+  correctAnswer: string;
 };
 
 const DEFINITIONS: Record<Term, TermDefinition> = {
@@ -39,18 +39,18 @@ const DEFINITIONS: Record<Term, TermDefinition> = {
       "The median is the sum of all values divided by the number of values.",
     ],
     correctAnswer:
-      "The median is the middle value in a dataset when the values are arranged in ascending or descending order. ",
+      "The median is the middle value in a dataset when the values are arranged in ascending or descending order.",
   },
   Mode: {
     definitions: [
       "The mode is the middle value in a dataset when the values are arranged in order.",
-      "The mode is the value that appears most frequently in a dataset. A dataset can have one mode,  ",
+      "The mode is the value that appears most frequently in a dataset. A dataset can have one mode,",
       "The mode is the average of all values in a dataset.",
       "The mode is the difference between the highest and lowest values in a dataset.",
       "The mode is the sum of all values divided by the number of values.",
     ],
     correctAnswer:
-      "The mode is the value that appears most frequently in a dataset. A dataset can have one mode,  ",
+      "The mode is the value that appears most frequently in a dataset. A dataset can have one mode,",
   },
   Range: {
     definitions: [
@@ -87,15 +87,15 @@ const Page = () => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [matched, setMatched] = useState<MatchedAnswers>({} as MatchedAnswers);
   const [hoveredDefinition, setHoveredDefinition] = useState<string | null>(null);
-  const [, setAttempted] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [progress, setProgress] = useState<Progress>({} as Progress);
   const [isTimerUp, setIsTimerUp] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
+  const [userAnswers, setUserAnswers] = useState<MatchedAnswers>({} as MatchedAnswers);
 
   const router = useRouter();
 
-
+  // Touch event handlers
   const handleTouchStart = (e: React.TouchEvent, term: Term) => {
     e.preventDefault();
     setDraggedTerm(term);
@@ -112,47 +112,6 @@ const Page = () => {
     }
   };
 
-
-  const gradeUser = () => {
-    TERMS.forEach((term) => {
-      const userAnswer = matched[term];
-      if (userAnswer) {
-        const isAnswerCorrect = DEFINITIONS[term].correctAnswer === userAnswer;
-        setProgress((prev) => ({ ...prev, [term]: isAnswerCorrect }));
-        if (isAnswerCorrect) {
-          setScore((prev) => prev + 1); // Increment score for correct answers
-        }
-      }
-    });
-    setIsTimerUp(true); 
-    setTimeLeft(0); 
-    clearLocalStorage(); 
-  };
-
-  // Clear local storage
-  const clearLocalStorage = () => {
-    localStorage.removeItem("matched");
-    localStorage.removeItem("progress");
-    localStorage.removeItem("score");
-    localStorage.removeItem("currentIndex");
-    localStorage.removeItem("timeLeft");
-  };
-
-  // Timer effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev > 0) return prev - 1;
-        clearInterval(timer);
-        setIsTimerUp(true);
-        return 0;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [currentIndex]);
-
-
-
   // Drag and drop handlers
   const handleDragStart = (term: Term) => {
     if (!isTimerUp) {
@@ -166,14 +125,21 @@ const Page = () => {
         DEFINITIONS[draggedTerm].correctAnswer === definition;
       setMatched((prev) => ({ ...prev, [TERMS[currentIndex]]: definition }));
       setIsCorrect(isAnswerCorrect);
-      setAttempted(true);
-      setProgress((prev) => ({
-        ...prev,
-        [TERMS[currentIndex]]: isAnswerCorrect,
-      }));
-      if (isAnswerCorrect) {
-        setScore((prev) => prev + 1); // Increment score for correct answers
-      }
+      setUserAnswers((prev) => ({ ...prev, [TERMS[currentIndex]]: definition }));
+      setProgress((prev) => ({ ...prev, [TERMS[currentIndex]]: isAnswerCorrect }));
+    }
+  };
+
+  // Drag enter and leave handlers
+  const handleDragEnter = (definition: string) => {
+    if (!isTimerUp) {
+      setHoveredDefinition(definition);
+    }
+  };
+
+  const handleDragLeave = () => {
+    if (!isTimerUp) {
+      setHoveredDefinition(null);
     }
   };
 
@@ -197,7 +163,7 @@ const Page = () => {
     if (!isTimerUp) {
       setMatched((prev) => ({ ...prev, [TERMS[currentIndex]]: null }));
       setIsCorrect(null);
-      setAttempted(false);
+      setUserAnswers((prev) => ({ ...prev, [TERMS[currentIndex]]: null }));
       setProgress((prev) => ({ ...prev, [TERMS[currentIndex]]: null }));
       setTimeLeft(10); // Reset the timer to 10 seconds
     }
@@ -207,20 +173,44 @@ const Page = () => {
   const resetStateForNextQuestion = () => {
     setDraggedTerm(null);
     setIsCorrect(null);
-    setAttempted(false);
   };
 
-  const handleDragEnter = (definition: string) => {
-    if (!isTimerUp) {
-      setHoveredDefinition(definition);
-    }
+  // Calculate score when the user finishes the quiz
+  const gradeUser = () => {
+    let newScore = 0;
+    TERMS.forEach((term) => {
+      const userAnswer = userAnswers[term];
+      if (userAnswer && DEFINITIONS[term].correctAnswer === userAnswer) {
+        newScore += 1;
+      }
+    });
+    setScore(newScore);
+    setIsTimerUp(true);
+    setTimeLeft(0);
+    clearLocalStorage();
   };
 
-  const handleDragLeave = () => {
-    if (!isTimerUp) {
-      setHoveredDefinition(null);
-    }
+  // Clear local storage
+  const clearLocalStorage = () => {
+    localStorage.removeItem("matched");
+    localStorage.removeItem("progress");
+    localStorage.removeItem("score");
+    localStorage.removeItem("currentIndex");
+    localStorage.removeItem("timeLeft");
   };
+
+  // Timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev > 0) return prev - 1;
+        clearInterval(timer);
+        setIsTimerUp(true);
+        return 0;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [currentIndex]);
 
   // Load saved state from local storage on mount
   useEffect(() => {
@@ -254,10 +244,10 @@ const Page = () => {
           key={index}
           className={`h-3 w-10 rounded-md ${
             progress[term] === true
-              ? "bg-purple-500"
+              ? "bg-purple-500" // Correct answer
               : progress[term] === false
-              ? "bg-purple-500"
-              : "bg-gray-300"
+              ? "bg-purple-500" // Incorrect answer
+              : "bg-gray-300" // Unanswered
           }`}
         />
       ))}
@@ -299,7 +289,6 @@ const Page = () => {
             <button
               className="mt-4 py-2 px-24 rounded hover:text-red-200 bg-green-500 text-white text-sm sm:text-base"
               onClick={() => {
-                // Reset all state variables
                 setCurrentIndex(0);
                 setMatched({} as MatchedAnswers);
                 setProgress({} as Progress);
@@ -338,43 +327,42 @@ const Page = () => {
             {DEFINITIONS[TERMS[currentIndex]].definitions.map(
               (definition, index, array) => (
                 <div
-                key={index}
-                className={`border border-dashed p-4 text-center rounded-md min-h-[60px] flex items-center justify-between gap-2 ${
-                  matched[TERMS[currentIndex]] === definition
-                    ? isCorrect
-                      ? "border-green-500 bg-green-100"
-                      : "border-red-500 bg-red-100"
-                    : hoveredDefinition === definition
-                    ? "border-purple-500 bg-purple-200"
-                    : "border-gray-400 bg-purple-100"
-                } ${
-                  index === array.length - 1 && array.length % 2 !== 0
-                    ? "col-span-2 justify-self-center"
-                    : ""
-                }`}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => handleDrop(definition)}
-                onDragEnter={() => handleDragEnter(definition)}
-                onDragLeave={handleDragLeave}
-                onTouchStart={(e) => handleTouchStart(e, TERMS[currentIndex])} // Fixed extra bracket
-                onTouchMove={handleTouchMove}
-                onTouchEnd={(e) => handleTouchEnd(e, definition)} // Pass definition here
-                style={{ pointerEvents: isTimerUp ? "none" : "auto" }}
-              >
-                {definition}
-                {matched[TERMS[currentIndex]] === definition &&
-                  (isCorrect ? (
-                    <IoCheckmarkCircle className="text-green-500 text-2xl" />
-                  ) : (
-                    <IoCloseCircle className="text-red-500 text-2xl" />
-                  ))}
-              </div>
+                  key={index}
+                  className={`border border-dashed p-4 text-center rounded-md min-h-[60px] flex items-center justify-between gap-2 ${
+                    matched[TERMS[currentIndex]] === definition
+                      ? isCorrect
+                        ? "border-green-500 bg-green-100"
+                        : "border-red-500 bg-red-100"
+                      : hoveredDefinition === definition
+                      ? "border-purple-500 bg-purple-200"
+                      : "border-gray-400 bg-purple-100"
+                  } ${
+                    index === array.length - 1 && array.length % 2 !== 0
+                      ? "col-span-2 justify-self-center"
+                      : ""
+                  }`}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => handleDrop(definition)}
+                  onDragEnter={() => handleDragEnter(definition)}
+                  onDragLeave={handleDragLeave}
+                  onTouchStart={(e) => handleTouchStart(e, TERMS[currentIndex])}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={(e) => handleTouchEnd(e, definition)}
+                  style={{ pointerEvents: isTimerUp ? "none" : "auto" }}
+                >
+                  {definition}
+                  {matched[TERMS[currentIndex]] === definition &&
+                    (isCorrect ? (
+                      <IoCheckmarkCircle className="text-green-500 text-2xl" />
+                    ) : (
+                      <IoCloseCircle className="text-red-500 text-2xl" />
+                    ))}
+                </div>
               )
             )}
           </div>
 
           {/* Drag Section */}
-          
           <p className="text-center font-semibold text-lg sm:text-xl mt-10">
             Drag the algebraic term below to match the definition above
           </p>
@@ -387,7 +375,7 @@ const Page = () => {
                     className={`border-2 p-4 text-center rounded-lg cursor-pointer bg-[#070606] text-[#fefefe] min-w-[100px] md:w-[120px]
                       ${
                         TERMS.length % 2 !== 0 && index === TERMS.length - 1
-                          ? "col-span-2 sm:col-span-1" // Apply col-span-2 only on small screens
+                          ? "col-span-2 sm:col-span-1"
                           : ""
                       }`}
                     draggable={!isTimerUp}
@@ -416,15 +404,15 @@ const Page = () => {
               className="mt-6 p-3 rounded-lg bg-purple-800 text-white w-[40%] md:w-[30%] flex items-center justify-center gap-4 text-sm sm:text-base"
               onClick={() => {
                 if (currentIndex < TERMS.length - 1) {
-                  handleNext(); // Go to the next question
+                  handleNext();
                 } else {
-                  gradeUser(); // Score the user and set timer to 0
+                  gradeUser();
                 }
               }}
               disabled={isTimerUp}
             >
               {currentIndex < TERMS.length - 1 ? "Continue" : "Finish"}
-              <FaArrowRightLong className="ml-2" /> {/* Icon on the right */}
+              <FaArrowRightLong className="ml-2" />
             </button>
           </div>
         </div>
