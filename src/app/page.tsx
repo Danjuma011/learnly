@@ -20,8 +20,8 @@ export default function Home() {
         <div className="text-2xl font-bold">Loading...</div> // Loading state
       ) : (
         <>
-          <p className="text-2xl font-bold mb-4">Welcome to the assessment</p>
-          <p className="text-xl font-semibold mb-4">click on one of the buttons below</p>
+          <p className="text-2xl font-bold mb-2">Welcome to the assessment</p>
+          <p className="text-xl font-semibold mb-8">click on one of the buttons below</p>
           <button
             className="cursor-pointer text-white hover:text-blue-800 mb-4 bg-slate-500 p-3 rounded-lg"
             onClick={() => handleNavigation("/assessment/multiple-questions")}
