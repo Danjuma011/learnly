@@ -96,19 +96,34 @@ const Page = () => {
   const router = useRouter();
 
 
-  const touchMoveHandler = (e: TouchEvent) => {
-    e.preventDefault(); // Prevent default behavior (e.g., scrolling)
-  };
+  // const touchMoveHandler = (e: TouchEvent) => {
+  //   e.preventDefault(); // Prevent default behavior (e.g., scrolling)
+  // };
 
-  useEffect(() => {
-    // Add the non-passive touchmove event listener
-    document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+  // useEffect(() => {
+  //   // Add the non-passive touchmove event listener
+  //   document.addEventListener("touchmove", touchMoveHandler, { passive: false });
 
-    // Clean up the event listener on unmount
-    return () => {
-      document.removeEventListener("touchmove", touchMoveHandler);
-    };
-  }, []);
+  //   // Clean up the event listener on unmount
+  //   return () => {
+  //     document.removeEventListener("touchmove", touchMoveHandler);
+  //   };
+  // }, []);
+
+  // const touchMoveHandler = (e: TouchEvent) => {
+  //   e.preventDefault(); // Prevent default behavior (e.g., scrolling)
+  // };
+  
+  // useEffect(() => {
+  //   // Add the non-passive touchmove event listener
+  //   document.addEventListener("touchmove", touchMoveHandler, { passive: false });
+  
+  //   // Clean up the event listener on unmount
+  //   return () => {
+  //     document.removeEventListener("touchmove", touchMoveHandler);
+  //   };
+  // }, []);
+
 
   const handleTouchStart = (e: React.TouchEvent, term: Term) => {
     e.preventDefault();
